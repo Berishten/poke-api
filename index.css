@@ -1,0 +1,29 @@
+#map {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+}
+.card {
+  width: 150px;
+  height: 200px;
+  border: 1px solid black;
+  display: inline-block;
+  margin: 10px;
+  text-align: center;
+}
+
+.header img {
+  display: block;
+  margin: 0 auto;
+}
+
+.name {
+  font-size: 20px;
+  margin: 20px;
+}
+
+.footer {
+  margin: 20px;
+}
