@@ -7,12 +7,22 @@ export default class Map {
       container: "map",
       style: "mapbox://styles/berishten/ckwofjrlh0g9t15o95287iogr",
       center: [-77.5, 40],
-      zoom: 16
+      doubleClickZoom: false,
+      attributionControl: false,
+      zoom: 7//13,
+    //   minZoom: 13,
+    //   maxZoom: 18,
+      //   bearing: -30,
+      // dragPan: false,
+      // dragRotate: false,
+      //   pitch: 45,
+      // minPitch: 45,
+      //   maxPitch: 45,
     });
-    
+
     this.geoFindMe();
     // Initialize events
-    // createMarkerEvent()
+    this.createMarkerEvent()
   }
 
   createMarkerEvent() {
