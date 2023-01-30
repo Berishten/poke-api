@@ -1,6 +1,6 @@
 export default class Map {
   mapMarkers = [];
-  
+
   constructor() {
     mapboxgl.accessToken =
       "pk.eyJ1IjoiYmVyaXNodGVuIiwiYSI6ImNrbzlqNzUyODAzbDIzNG83aHJyZzF5aWQifQ.uDa2TMtXhIayPnfY5_8u-g";
@@ -10,9 +10,9 @@ export default class Map {
       center: [-118.274861, 36.598999],
       doubleClickZoom: false,
       attributionControl: false,
-      zoom: 14, //13,
-      //   minZoom: 13,
-      //   maxZoom: 18,
+      zoom: 13,
+      minZoom: 15,
+      maxZoom: 18,
       //   bearing: -30,
       // dragPan: false,
       // dragRotate: false,
@@ -21,10 +21,13 @@ export default class Map {
       //   maxPitch: 45,
     });
 
-    this.geoFindMe();
-    
+    // this.map.on("load", (e) => {
+    //   this.geoFindMe();
+    // });
+    this.getUserLocation();
+
     // Initialize events
-    this.InitOnClickCreateMarker();
+    // this.InitOnClickCreateMarker();
   }
 
   InitOnClickCreateMarker() {
@@ -41,11 +44,11 @@ export default class Map {
     this.mapMarkers.push(marker);
   }
 
-  geoFindMe() {
+  getUserLocation() {
     let success = (position) => {
       const latitude = position.coords.latitude;
       const longitude = position.coords.longitude;
-      this.lastUserPosition = [longitude, latitude]
+      this.lastUserPosition = [longitude, latitude];
 
       this.map.jumpTo({
         center: [longitude, latitude],

@@ -2,10 +2,19 @@ import Map from "./js/MapBoxModule.js";
 
 (async () => {
   const map = new Map();
+  renderMarkers();
 
-  createPokeMarkers(await getPokemons()).forEach((element) => {
-    map.createMarker(randomCoordinates(.01, map.lastUserPosition), element);
-  });
+  function renderMarkers() {
+    let success = async (position) => {
+      let latLng = [position.coords.longitude, position.coords.latitude];
+      createPokeMarkers(await getPokemons()).forEach((element) => {
+        map.createMarker(randomCoordinates(0.005, latLng), element);
+      });
+    };
+    navigator.geolocation.getCurrentPosition(success, (e) => {
+      console.error(e);
+    });
+  }
 
   async function getPokemons() {
     const URL = "https://pokeapi.co/api/v2/pokemon/";
@@ -34,8 +43,6 @@ import Map from "./js/MapBoxModule.js";
     for (var i = 0; i < pokemons.length; i++) {
       let imageElement = document.createElement("img");
       imageElement.src = pokemons[i].sprite;
-      imageElement.setAttribute("class", "header");
-
       elementCards.push(imageElement);
     }
 
@@ -47,7 +54,6 @@ import Map from "./js/MapBoxModule.js";
     var y = origin[1] + (Math.random() * 2 - 1) * radius;
     return [x, y];
   }
-   
 
   function createElementCards(pokemons) {
     let elementCards = [];
