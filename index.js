@@ -2,7 +2,6 @@ import Map from "./js/MapBoxModule.js"
 
 (() => {
   const map = new Map()
-  map.add()
 
   async function getPokemons() {
     const URL = "https://pokeapi.co/api/v2/pokemon/";

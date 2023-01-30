@@ -1,4 +1,5 @@
 export default class Map {
+  mapMarkers = [];
   constructor() {
     mapboxgl.accessToken =
       "pk.eyJ1IjoiYmVyaXNodGVuIiwiYSI6ImNrbzlqNzUyODAzbDIzNG83aHJyZzF5aWQifQ.uDa2TMtXhIayPnfY5_8u-g";
@@ -9,31 +10,29 @@ export default class Map {
       zoom: 16,
     });
 
+    // Create events
     this.map.on("load", () => {
       let mapp = this.map;
       if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(function (position) {
-        //   latitude = position.coords.latitude;
-        //   longitude = position.coords.longitude;
-        //   mapp.jumpTo({ center: [latitude, longitude] });
           mapp.setCenter([position.coords.latitude, position.coords.longitude]);
-        //   mapp.setCenter([-74.5, 40]);
         });
       }
     });
+
+    this.map.on("click", "poi-label", (e) => {
+      console.log(e.lngLat);
+    });
   }
 
-  add(params) {
-    this.map.addControl(
-      new mapboxgl.GeolocateControl({
-        positionOptions: {
-          enableHighAccuracy: true,
-        },
-        // When active the map will receive updates to the device's location as it changes.
-        trackUserLocation: true,
-        // Draw an arrow next to the location dot to indicate which direction the device is heading.
-        showUserHeading: true,
-      })
-    );
+  addMarker() {
+    let marker = new Marker({
+      element:
+        "<img src='https://www.pngkey.com/png/full/891-8917119_ditto-transparent-png-ditto-pokemon-png.png'>",
+    })
+      .setLngLat([30.5, 50.5])
+      .addTo(this.map);
+
+    this.map.mapMarkers.push(marker);
   }
 }

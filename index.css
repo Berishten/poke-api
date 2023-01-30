@@ -5,6 +5,12 @@
   width: 100vw;
   height: 100vh;
 }
+
+.mapboxgl-ctrl-bottom-left,
+.mapboxgl-ctrl-bottom-right {
+  display: none;
+}
+
 .card {
   width: 150px;
   height: 200px;
