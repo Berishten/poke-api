@@ -1,18 +1,5 @@
 (() => {
-  const HOST = "http://localhost:3000";
-
-  // new Promise(() => {
-  //   axios
-  //     .get(HOST)
-  //     .then((response) => {
-  //       renderPokemons(response.data);
-  //     })
-  //     .catch((err) => {
-  //       console.log(err);
-  //     });
-  // });
-
-  // if (navigator.geolocation) {
+  if (navigator.geolocation) {
     navigator.geolocation.getCurrentPosition(function (position) {
       var latitude = position.coords.latitude;
       var longitude = position.coords.longitude;
@@ -26,22 +13,29 @@
         center: [longitude, latitude],
         zoom: 13,
       });
-      
-      map.addControl(
-        new mapboxgl.GeolocateControl({
-          positionOptions: {
-            enableHighAccuracy: true,
-          },
-          // When active the map will receive updates to the device's location as it changes.
-          trackUserLocation: true,
-          // Draw an arrow next to the location dot to indicate which direction the device is heading.
-          showUserHeading: true,
-        })
-      );
-    });
-    
-  // }
+    }); 
+  }
 
+  async function getPokemons() {
+    const URL = "https://pokeapi.co/api/v2/pokemon/";
+    try {
+      const response = await axios.get(URL);
+      const pokemonNames = response.data.results;
+      const pokemonsRequests = pokemonNames.map((pokemon) => {
+        return axios.get(URL + pokemon.name);
+      });
+      const pokemonsFromAPI = await Promise.all(pokemonsRequests)
+      return pokemonsFromAPI.map((pokemon) => {
+        return {
+          name: pokemon.data.name,
+          sprite: pokemon.data.sprites?.front_default,
+        };
+      });
+    } catch (error) {
+      console.error(error);
+      return null;
+    }
+  }
 
   function renderPokemons(pokemons) {
     const cards = pokemons.map((pokemon) => {
