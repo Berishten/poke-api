@@ -24,17 +24,17 @@ export default class Map {
     this.geoFindMe();
     
     // Initialize events
-    this.createMarkerEvent();
+    this.InitOnClickCreateMarker();
   }
 
-  createMarkerEvent() {
+  InitOnClickCreateMarker() {
     this.map.on("click", (e) => {
-      this.addMarker(e.lngLat);
+      this.createMarker(e.lngLat);
     });
   }
 
-  addMarker(location) {
-    let marker = new mapboxgl.Marker();
+  createMarker(location, element) {
+    let marker = new mapboxgl.Marker(element);
     marker.setLngLat(location);
     marker.addTo(this.map);
 
@@ -45,6 +45,7 @@ export default class Map {
     let success = (position) => {
       const latitude = position.coords.latitude;
       const longitude = position.coords.longitude;
+      this.lastUserPosition = [longitude, latitude]
 
       this.map.jumpTo({
         center: [longitude, latitude],

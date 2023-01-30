@@ -1,7 +1,11 @@
-import Map from "./js/MapBoxModule.js"
+import Map from "./js/MapBoxModule.js";
 
-(() => {
-  const map = new Map()
+(async () => {
+  const map = new Map();
+
+  createPokeMarkers(await getPokemons()).forEach((element) => {
+    map.createMarker(randomCoordinates(.01, map.lastUserPosition), element);
+  });
 
   async function getPokemons() {
     const URL = "https://pokeapi.co/api/v2/pokemon/";
@@ -11,7 +15,7 @@ import Map from "./js/MapBoxModule.js"
       const pokemonsRequests = pokemonNames.map((pokemon) => {
         return axios.get(URL + pokemon.name);
       });
-      const pokemonsFromAPI = await Promise.all(pokemonsRequests)
+      const pokemonsFromAPI = await Promise.all(pokemonsRequests);
       return pokemonsFromAPI.map((pokemon) => {
         return {
           name: pokemon.data.name,
@@ -24,7 +28,29 @@ import Map from "./js/MapBoxModule.js"
     }
   }
 
-  function renderPokemons(pokemons) {
+  function createPokeMarkers(pokemons) {
+    let elementCards = [];
+
+    for (var i = 0; i < pokemons.length; i++) {
+      let imageElement = document.createElement("img");
+      imageElement.src = pokemons[i].sprite;
+      imageElement.setAttribute("class", "header");
+
+      elementCards.push(imageElement);
+    }
+
+    return elementCards;
+  }
+
+  function randomCoordinates(radius, origin) {
+    var x = origin[0] + (Math.random() * 2 - 1) * radius;
+    var y = origin[1] + (Math.random() * 2 - 1) * radius;
+    return [x, y];
+  }
+   
+
+  function createElementCards(pokemons) {
+    let elementCards = [];
     const cards = pokemons.map((pokemon) => {
       return {
         name: pokemon.name,
@@ -52,7 +78,9 @@ import Map from "./js/MapBoxModule.js"
       footer.setAttribute("class", "footer");
       card.appendChild(footer);
 
-      document.body.appendChild(card);
+      elementCards.push(card);
     }
+
+    return elementCards;
   }
 })();
