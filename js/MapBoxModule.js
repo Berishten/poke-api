@@ -36,9 +36,18 @@ export default class Map {
     });
   }
 
-  createMarker(location, element) {
+  createMarker(location, element, data) {
     let marker = new mapboxgl.Marker(element);
     marker.setLngLat(location);
+    let popup = new mapboxgl.Popup({
+      closeButton: false,
+      offset: { bottom: [0, -30] },
+    });
+
+    const name = data.name.charAt(0).toUpperCase() + data.name.slice(1);
+
+    popup.setHTML(`<h1>${name}</h1>`);
+    marker.setPopup(popup);
     marker.addTo(this.map);
 
     this.mapMarkers.push(marker);

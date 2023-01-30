@@ -7,8 +7,9 @@ import Map from "./js/MapBoxModule.js";
   function renderMarkers() {
     let success = async (position) => {
       let latLng = [position.coords.longitude, position.coords.latitude];
-      createPokeMarkers(await getPokemons()).forEach((element) => {
-        map.createMarker(randomCoordinates(0.005, latLng), element);
+      const pokemons = await getPokemons()
+      createPokeMarkers(pokemons).forEach((element, i) => {
+        map.createMarker(randomCoordinates(0.005, latLng), element, pokemons[i]);
       });
     };
     navigator.geolocation.getCurrentPosition(success, (e) => {
@@ -18,26 +19,63 @@ import Map from "./js/MapBoxModule.js";
 
   async function getPokemons() {
     const URL = "https://pokeapi.co/api/v2/pokemon/";
-    const set = Math.round(Math.random() * 1279)
-    const limit = 40
-    const pokemonSetURL = `https://pokeapi.co/api/v2/pokemon/?offset=${set}&limit=${limit}`;
-    try {
-      const response = await axios.get(pokemonSetURL);
-      const pokemonNames = response.data.results;
-      const pokemonsRequests = pokemonNames.map((pokemon) => {
-        return axios.get(URL + pokemon.name);
+    const pokeCount = 1247
+    let limit = 25
+    const division = parseInt(pokeCount / limit)
+    let offset = parseInt(Math.random() * division) * limit
+    if (offset == (division*limit)) limit = 9
+    const pokemonSetURL = `https://pokeapi.co/api/v2/pokemon/?offset=${offset}&limit=${limit}`;
+
+
+    if ('caches' in window) {
+      return caches.match(pokemonSetURL).then(async function(response) {
+        // Devuelve la respuesta del cache si existe
+        if (response) {
+          return response.json();
+        }
+        // Hace la petición si no está en el cache
+        try {
+          const response = await axios.get(pokemonSetURL);
+          const pokemonNames = response.data.results;
+          const pokemonsRequests = pokemonNames.map((pokemon) => {
+            return axios.get(URL + pokemon.name);
+          });
+          const pokemonsFromAPI = await Promise.all(pokemonsRequests);
+          return pokemonsFromAPI.map((pokemon) => {
+              return {
+                name: pokemon.data.name,
+                sprite: pokemon.data.sprites.front_default,
+              };
+          });
+        } catch (error) {
+          console.error(error);
+          return null;
+        }
       });
-      const pokemonsFromAPI = await Promise.all(pokemonsRequests);
-      return pokemonsFromAPI.map((pokemon) => {
-        return {
-          name: pokemon.data.name,
-          sprite: pokemon.data.sprites?.front_default,
-        };
-      });
-    } catch (error) {
-      console.error(error);
-      return null;
     }
+    // Si no existe el cache, hace la petición directamente
+    return fetch(url).then(function(response) {
+      return response.json();
+    });
+
+
+    // try {
+    //   const response = await axios.get(pokemonSetURL);
+    //   const pokemonNames = response.data.results;
+    //   const pokemonsRequests = pokemonNames.map((pokemon) => {
+    //     return axios.get(URL + pokemon.name);
+    //   });
+    //   const pokemonsFromAPI = await Promise.all(pokemonsRequests);
+    //   return pokemonsFromAPI.map((pokemon) => {
+    //       return {
+    //         name: pokemon.data.name,
+    //         sprite: pokemon.data.sprites.front_default,
+    //       };
+    //   });
+    // } catch (error) {
+    //   console.error(error);
+    //   return null;
+    // }
   }
 
   function createPokeMarkers(pokemons) {
