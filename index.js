@@ -1,20 +1,8 @@
+import Map from "./js/MapBoxModule.js"
+
 (() => {
-  if (navigator.geolocation) {
-    navigator.geolocation.getCurrentPosition(function (position) {
-      var latitude = position.coords.latitude;
-      var longitude = position.coords.longitude;
-
-      mapboxgl.accessToken =
-        "pk.eyJ1IjoiYmVyaXNodGVuIiwiYSI6ImNrbzlqNzUyODAzbDIzNG83aHJyZzF5aWQifQ.uDa2TMtXhIayPnfY5_8u-g";
-
-      let map = new mapboxgl.Map({
-        container: "map",
-        style: "mapbox://styles/berishten/ckwofjrlh0g9t15o95287iogr",
-        center: [longitude, latitude],
-        zoom: 13,
-      });
-    }); 
-  }
+  const map = new Map()
+  map.add()
 
   async function getPokemons() {
     const URL = "https://pokeapi.co/api/v2/pokemon/";
