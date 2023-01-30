@@ -1,17 +1,18 @@
 export default class Map {
   mapMarkers = [];
+  
   constructor() {
     mapboxgl.accessToken =
       "pk.eyJ1IjoiYmVyaXNodGVuIiwiYSI6ImNrbzlqNzUyODAzbDIzNG83aHJyZzF5aWQifQ.uDa2TMtXhIayPnfY5_8u-g";
     this.map = new mapboxgl.Map({
       container: "map",
       style: "mapbox://styles/berishten/ckwofjrlh0g9t15o95287iogr",
-      center: [-77.5, 40],
+      center: [-118.274861, 36.598999],
       doubleClickZoom: false,
       attributionControl: false,
-      zoom: 7//13,
-    //   minZoom: 13,
-    //   maxZoom: 18,
+      zoom: 14, //13,
+      //   minZoom: 13,
+      //   maxZoom: 18,
       //   bearing: -30,
       // dragPan: false,
       // dragRotate: false,
@@ -21,14 +22,14 @@ export default class Map {
     });
 
     this.geoFindMe();
+    
     // Initialize events
-    this.createMarkerEvent()
+    this.createMarkerEvent();
   }
 
   createMarkerEvent() {
     this.map.on("click", (e) => {
-      const POINT = [e.lngLat.lat, e.lngLat.lng];
-      this.addMarker(POINT);
+      this.addMarker(e.lngLat);
     });
   }
 
