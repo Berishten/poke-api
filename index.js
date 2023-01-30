@@ -18,8 +18,11 @@ import Map from "./js/MapBoxModule.js";
 
   async function getPokemons() {
     const URL = "https://pokeapi.co/api/v2/pokemon/";
+    const set = Math.round(Math.random() * 1279)
+    const limit = 40
+    const pokemonSetURL = `https://pokeapi.co/api/v2/pokemon/?offset=${set}&limit=${limit}`;
     try {
-      const response = await axios.get(URL);
+      const response = await axios.get(pokemonSetURL);
       const pokemonNames = response.data.results;
       const pokemonsRequests = pokemonNames.map((pokemon) => {
         return axios.get(URL + pokemon.name);

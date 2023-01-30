@@ -12,7 +12,7 @@ export default class Map {
       attributionControl: false,
       zoom: 13,
       minZoom: 15,
-      maxZoom: 18,
+      maxZoom: 16,
       //   bearing: -30,
       // dragPan: false,
       // dragRotate: false,
