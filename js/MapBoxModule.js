@@ -7,46 +7,43 @@ export default class Map {
       container: "map",
       style: "mapbox://styles/berishten/ckwofjrlh0g9t15o95287iogr",
       center: [-77.5, 40],
-      zoom: 16,
+      zoom: 16
     });
+    
+    this.geoFindMe();
+    // Initialize events
+    // createMarkerEvent()
+  }
 
-    this.map.on("load", () => {
-      this.map.addControl(
-        new mapboxgl.GeolocateControl({
-          positionOptions: {
-            enableHighAccuracy: true,
-          },
-          // When active the map will receive updates to the device's location as it changes.
-          trackUserLocation: true,
-          // Draw an arrow next to the location dot to indicate which direction the device is heading.
-          showUserHeading: true,
-        })
-      );
-    });
-
-    // Create events
-    this.map.on("load", () => {
-      let mapp = this.map;
-      if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(function (position) {
-          mapp.setCenter([position.coords.latitude, position.coords.longitude]);
-        });
-      }
-    });
-
-    this.map.on("click", "poi-label", (e) => {
-      console.log(e.lngLat);
+  createMarkerEvent() {
+    this.map.on("click", (e) => {
+      const POINT = [e.lngLat.lat, e.lngLat.lng];
+      this.addMarker(POINT);
     });
   }
 
-  addMarker() {
-    let marker = new Marker({
-      element:
-        "<img src='https://www.pngkey.com/png/full/891-8917119_ditto-transparent-png-ditto-pokemon-png.png'>",
-    })
-      .setLngLat([30.5, 50.5])
-      .addTo(this.map);
+  addMarker(location) {
+    let marker = new mapboxgl.Marker();
+    marker.setLngLat(location);
+    marker.addTo(this.map);
 
-    this.map.mapMarkers.push(marker);
+    this.mapMarkers.push(marker);
+  }
+
+  geoFindMe() {
+    let success = (position) => {
+      const latitude = position.coords.latitude;
+      const longitude = position.coords.longitude;
+
+      this.map.jumpTo({
+        center: [longitude, latitude],
+      });
+    };
+
+    function error() {
+      console.log("Ocurrio un error");
+    }
+
+    navigator.geolocation.getCurrentPosition(success, error);
   }
 }
